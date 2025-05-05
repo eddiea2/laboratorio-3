@@ -111,21 +111,26 @@ class Analizador:
     
 
 
+
     def diferencia_ventas_exportaciones_por_provincia(self):
         """Retorna un diccionario con la diferencia entre TOTAL_VENTAS y EXPORTACIONES por provincia."""
-    resultado = {}
-    for registro in self.datos:
-        try:
-            provincia = registro['PROVINCIA']
-            ventas = float(registro['TOTAL_VENTAS'].replace(',', '.'))
-            exportaciones = float(registro['EXPORTACIONES'].replace(',', '.'))
-            diferencia = ventas - exportaciones
+        resultado = {}
+        for registro in self.datos:
+            try:
+                provincia = registro['PROVINCIA']
+                ventas = float(registro['TOTAL_VENTAS'].replace(',', '.'))
+                exportaciones = float(registro['EXPORTACIONES'].replace(',', '.'))
+                diferencia = ventas - exportaciones
 
-            if provincia in resultado:
-                resultado[provincia] += diferencia
-            else:
-                resultado[provincia] = diferencia
-        except (KeyError, ValueError) as e:
-            print(f"Error procesando diferencia en {registro} -> {e}")
-       return resultado
+                if provincia in resultado:
+                    resultado[provincia] += diferencia
+                else:
+                    resultado[provincia] = diferencia
+            except (KeyError, ValueError) as e:
+                print(f"Error procesando diferencia en {registro} -> {e}")
+        return resultado
+
+
+
+
 
