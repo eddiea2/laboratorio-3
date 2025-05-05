@@ -1,4 +1,3 @@
-# app.py
 from src.procesador import Analizador
 import os
 

@@ -1,4 +1,3 @@
-# procesador.py
 import csv
 
 class Analizador:
@@ -6,7 +5,6 @@ class Analizador:
         """Inicializa el analizador con datos del archivo CSV, excluyendo la provincia 'ND'."""
         self.datos = []
         try:
-            # Intenta abrir con UTF-8, si falla, intenta con Latin-1
             try:
                 with open(archivo_csv, mode='r', encoding='utf-8') as file:
                     self.datos = self._filtrar_provincias(csv.DictReader(file))
@@ -26,7 +24,7 @@ class Analizador:
         for registro in self.datos:
             try:
                 provincia = registro['PROVINCIA']
-                venta = float(registro['TOTAL_VENTAS'].replace(',', '.'))  # Soporte para comas decimales
+                venta = float(registro['TOTAL_VENTAS'].replace(',', '.'))
 
                 if provincia in resultado:
                     resultado[provincia] += venta
@@ -46,3 +44,35 @@ class Analizador:
             except (KeyError, ValueError) as e:
                 print(f"Error procesando registro: {registro} -> {e}")
         return total
+
+    def exportaciones_por_mes(self):
+        """Retorna un diccionario con el total de exportaciones agrupadas por mes."""
+        resultado = {}
+        for registro in self.datos:
+            try:
+                mes = registro['MES']
+                exportacion = float(registro['EXPORTACIONES'].replace(',', '.'))
+                if mes in resultado:
+                    resultado[mes] += exportacion
+                else:
+                    resultado[mes] = exportacion
+            except (KeyError, ValueError) as e:
+                print(f"Error procesando exportación: {registro} -> {e}")
+        return resultado
+
+    def provincia_con_mayor_importacion(self):
+        """Retorna el nombre de la provincia con mayor total de importaciones."""
+        importaciones = {}
+        for registro in self.datos:
+            try:
+                provincia = registro['PROVINCIA']
+                valor = float(registro['IMPORTACIONES'].replace(',', '.'))
+                if provincia in importaciones:
+                    importaciones[provincia] += valor
+                else:
+                    importaciones[provincia] = valor
+            except (KeyError, ValueError) as e:
+                print(f"Error procesando importación: {registro} -> {e}")
+        if not importaciones:
+            raise ValueError("No hay datos de importaciones disponibles.")
+        return max(importaciones.items(), key=lambda x: x[1])[0]
