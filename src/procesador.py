@@ -76,3 +76,61 @@ class Analizador:
         if not importaciones:
             raise ValueError("No hay datos de importaciones disponibles.")
         return max(importaciones.items(), key=lambda x: x[1])[0]
+    
+
+    def porcentaje_tarifa_0_por_provincia(self):
+        """Calcula el porcentaje promedio de ventas con tarifa 0% respecto al total por provincia."""
+        acumulado = {}
+        conteo = {}
+        for registro in self.datos:
+            try:
+                provincia = registro['PROVINCIA']
+                total_ventas = float(registro['TOTAL_VENTAS'].replace(',', '.'))
+                tarifa_0 = float(registro['VENTAS_NETAS_TARIFA_0'].replace(',', '.'))
+
+                if total_ventas == 0:
+                    continue
+
+                porcentaje = (tarifa_0 / total_ventas) * 100
+
+                if provincia in acumulado:
+                    acumulado[provincia] += porcentaje
+                    conteo[provincia] += 1
+                else:
+                    acumulado[provincia] = porcentaje
+                    conteo[provincia] = 1
+
+            except (KeyError, ValueError) as e:
+                print(f"Error procesando tarifa 0%: {registro} -> {e}")
+
+        resultado = {}
+        for provincia in acumulado:
+            resultado[provincia] = acumulado[provincia] / conteo[provincia]
+
+        return resultado
+    
+
+
+
+    def diferencia_ventas_exportaciones_por_provincia(self):
+        """Retorna un diccionario con la diferencia entre TOTAL_VENTAS y EXPORTACIONES por provincia."""
+        resultado = {}
+        for registro in self.datos:
+            try:
+                provincia = registro['PROVINCIA']
+                ventas = float(registro['TOTAL_VENTAS'].replace(',', '.'))
+                exportaciones = float(registro['EXPORTACIONES'].replace(',', '.'))
+                diferencia = ventas - exportaciones
+
+                if provincia in resultado:
+                    resultado[provincia] += diferencia
+                else:
+                    resultado[provincia] = diferencia
+            except (KeyError, ValueError) as e:
+                print(f"Error procesando diferencia en {registro} -> {e}")
+        return resultado
+
+
+
+
+

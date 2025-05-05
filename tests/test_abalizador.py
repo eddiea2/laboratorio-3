@@ -37,3 +37,19 @@ class TestAnalizador(unittest.TestCase):
         provincia = self.analizador.provincia_con_mayor_importacion()
         self.assertIsInstance(provincia, str)
         self.assertGreater(len(provincia), 1)
+
+    def test_porcentaje_tarifa_0_por_provincia(self):
+        porcentajes = self.analizador.porcentaje_tarifa_0_por_provincia()
+        self.assertIsInstance(porcentajes, dict)
+        self.assertTrue(all(0 <= p <= 100 for p in porcentajes.values()))
+
+
+
+
+    def test_diferencia_ventas_exportaciones_por_provincia(self):
+        diferencias = self.analizador.diferencia_ventas_exportaciones_por_provincia()
+        self.assertIsInstance(diferencias, dict)
+        self.assertTrue(all(isinstance(v, float) for v in diferencias.values()))
+
+
+
